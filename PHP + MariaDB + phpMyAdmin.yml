@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    image: php:8.2-apache
+    container_name: php-app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./src:/var/www/html
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb-server
+    environment:
+      MARIADB_ROOT_PASSWORD: mypassword
+      MARIADB_DATABASE: mydb
+      MARIADB_USER: myuser
+      MARIADB_PASSWORD: mypassworduser
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
